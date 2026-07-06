@@ -33,9 +33,8 @@ public class ExpenseService {
         //FileService fs = new FileService();
         expenses = storageService.loadData();
     }*/
-   public  void addExpense(Expense expense){
-        expenses.add(expense);
-        System.out.println("Expense Added Successfully");
+   public boolean addExpense(Expense expense){
+        return expenses.add(expense);
     }
     public  void viewExpense(){
         System.out.println("fetching the current expense list");

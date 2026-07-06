@@ -8,6 +8,8 @@ public class Expense {
     private String date;
     private static int nextId=1;
 
+    Expense(){};
+
     public Expense(float amount, String category, String description, String date){
         this.id=nextId++;
         if(amount<=0){
