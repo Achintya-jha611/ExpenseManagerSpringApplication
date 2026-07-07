@@ -1,5 +1,6 @@
 package com.achintya.expensemanager.service;
 
+import com.achintya.expensemanager.dto.ExpenseResponse;
 import com.achintya.expensemanager.model.Expense;
 import org.springframework.stereotype.Service;
 
@@ -33,8 +34,10 @@ public class ExpenseService {
         //FileService fs = new FileService();
         expenses = storageService.loadData();
     }*/
-   public boolean addExpense(Expense expense){
-        return expenses.add(expense);
+   public Expense addExpense(Expense expense){
+       expenses.add(expense);
+       //return new ExpenseResponse(expense.getId(),expense.getAmount(),expense.getCategory(),expense.getDescription(),expense.getDate());
+        return  expense;
     }
     public  void viewExpense(){
         System.out.println("fetching the current expense list");
