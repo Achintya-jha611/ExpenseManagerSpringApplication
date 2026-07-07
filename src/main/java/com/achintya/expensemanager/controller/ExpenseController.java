@@ -1,7 +1,11 @@
 package com.achintya.expensemanager.controller;
 
+import com.achintya.expensemanager.dto.CreateExpenseRequest;
+import com.achintya.expensemanager.dto.ExpenseResponse;
 import com.achintya.expensemanager.model.Expense;
 import com.achintya.expensemanager.service.ExpenseService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +24,10 @@ public class ExpenseController {
         return expenseService.getAllExpenses();
     }
     @PostMapping("/expenses")
-    public boolean addExpense(@RequestBody Expense expense){
-        return expenseService.addExpense(expense);
+    public ResponseEntity<ExpenseResponse> addExpense(@RequestBody CreateExpenseRequest request){
+        Expense expense = new Expense(request.getAmount(),request.getCategory(),request.getDescription(),request.getDate());
+        Expense createdExpense=expenseService.addExpense(expense);
+        //return new ExpenseResponse(createdExpense.getId(),createdExpense.getAmount(),createdExpense.getCategory(),createdExpense.getDescription(),createdExpense.getDate());
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ExpenseResponse(createdExpense.getId(),createdExpense.getAmount(),createdExpense.getCategory(),createdExpense.getDescription(),createdExpense.getDate()));
     }
 }
