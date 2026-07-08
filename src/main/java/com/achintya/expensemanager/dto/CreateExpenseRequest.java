@@ -1,10 +1,13 @@
 package com.achintya.expensemanager.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+
 public class CreateExpenseRequest {
-    private float amount;
-    private String category;
-    private String description;
-    private String date;
+    @Positive private float amount;
+    @NotBlank private String category;
+    @NotBlank private String description;
+    @NotBlank private String date;
 
     public float getAmount() {
         return amount;
