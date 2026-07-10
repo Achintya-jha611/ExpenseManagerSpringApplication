@@ -1,20 +1,26 @@
 package com.achintya.expensemanager.service;
-
-import com.achintya.expensemanager.dto.ExpenseResponse;
 import com.achintya.expensemanager.model.Expense;
+import com.achintya.expensemanager.storage.StorageService;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import org.slf4j.LoggerFactory;
 @Service
 public class ExpenseService {
+    private static final Logger logger = LoggerFactory.getLogger(ExpenseService.class);
     private ArrayList<Expense> expenses=new ArrayList<>();
-    public ExpenseService(){
-        Expense e1= new Expense(1,420.0f,"food","food expense","06-07-2026");
+    private StorageService storageService;
+    public ExpenseService(StorageService storageService){
+        /*Expense e1= new Expense(1,420.0f,"food","food expense","06-07-2026");
         Expense e2= new Expense(2,991.2f,"travel","travel expense","06-07-2026");
         Expense e3= new Expense(3,666.35f,"shopping","shopping expense","06-07-2026");
         expenses.add(e1);
         expenses.add(e2);
-        expenses.add(e3);
+        expenses.add(e3);*/
+        this.storageService=storageService;
+        expenses=storageService.load();
+        logger.info("expenses retrived successfully from file");
     }
     public void printMenu(){
         System.out.println("===== Expense Manager =====");
@@ -37,7 +43,14 @@ public class ExpenseService {
    public Expense addExpense(Expense expense){
        expenses.add(expense);
        //return new ExpenseResponse(expense.getId(),expense.getAmount(),expense.getCategory(),expense.getDescription(),expense.getDate());
-        return  expense;
+       boolean expenseSaved=storageService.save(expense);
+       if(expenseSaved) {
+           logger.info("expense saved to the file successfully");
+       }
+       else{
+           logger.warn("failed to save expense to file");
+       }
+       return  expense;
     }
     public  void viewExpense(){
         System.out.println("fetching the current expense list");
