@@ -14,10 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 public class ExpenseController {
     private ExpenseService expenseService;
+    private static final Logger logger = LoggerFactory.getLogger(ExpenseController.class);
     public ExpenseController(ExpenseService expenseService){
         this.expenseService = expenseService;
     }
@@ -31,6 +34,7 @@ public class ExpenseController {
         //Expense expense = new Expense(request.getAmount(),request.getCategory(),request.getDescription(),request.getDate());
         Expense createdExpense=expenseService.addExpense(expense);
         //return new ExpenseResponse(createdExpense.getId(),createdExpense.getAmount(),createdExpense.getCategory(),createdExpense.getDescription(),createdExpense.getDate());
+        logger.info("Expense Successfully Created [id={},amount={} and category={}]",createdExpense.getId(),createdExpense.getAmount(),createdExpense.getCategory());
         return ResponseEntity.status(HttpStatus.CREATED).body(ExpenseMapper.toExpenseResponse(createdExpense));
     }
 }
