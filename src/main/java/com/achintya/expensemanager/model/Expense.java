@@ -1,7 +1,13 @@
 package com.achintya.expensemanager.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Expense {
-    private int id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private int id;
     private float amount;
     private String category;
     private String description;
