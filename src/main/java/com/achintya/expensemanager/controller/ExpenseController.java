@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
-import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,15 +25,13 @@ public class ExpenseController {
         this.expenseService = expenseService;
     }
     @GetMapping("/expenses")
-    public ArrayList<Expense> getAllExpenses(){
+    public List<Expense> getAllExpenses(){
         return expenseService.getAllExpenses();
     }
     @PostMapping("/expenses")
     public ResponseEntity<ExpenseResponse> addExpense(@Valid @RequestBody CreateExpenseRequest request){
         Expense expense = ExpenseMapper.toExpense(request);
-        //Expense expense = new Expense(request.getAmount(),request.getCategory(),request.getDescription(),request.getDate());
         Expense createdExpense=expenseService.addExpense(expense);
-        //return new ExpenseResponse(createdExpense.getId(),createdExpense.getAmount(),createdExpense.getCategory(),createdExpense.getDescription(),createdExpense.getDate());
         logger.info("Expense Successfully Created [id={},amount={} and category={}]",createdExpense.getId(),createdExpense.getAmount(),createdExpense.getCategory());
         return ResponseEntity.status(HttpStatus.CREATED).body(ExpenseMapper.toExpenseResponse(createdExpense));
     }

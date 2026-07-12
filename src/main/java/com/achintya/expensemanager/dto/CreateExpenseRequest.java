@@ -1,13 +1,18 @@
 package com.achintya.expensemanager.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
+
+import java.time.LocalDate;
 
 public class CreateExpenseRequest {
     @Positive private float amount;
     @NotBlank private String category;
     @NotBlank private String description;
-    @NotBlank private String date;
+    @NotNull(message = "Date is required")
+    @PastOrPresent(message = "Expense date cannot be in the future") private LocalDate date;
 
     public float getAmount() {
         return amount;
@@ -33,11 +38,11 @@ public class CreateExpenseRequest {
         this.description = description;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 }

@@ -10,10 +10,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
+ /*
 @Service
 public class FileStorageService implements StorageService{
-    private static final Logger logger = LoggerFactory.getLogger(FileStorageService.class);
+   private static final Logger logger = LoggerFactory.getLogger(FileStorageService.class);
     @Override
     public boolean save(Expense expense) {
         try(FileWriter fileWriter= new FileWriter("data.txt",true)){
@@ -56,4 +56,4 @@ public class FileStorageService implements StorageService{
         }
         return expenses;
     }
-}
+}*/
