@@ -1,15 +1,17 @@
 package com.achintya.expensemanager.dto;
 
+import java.time.LocalDate;
+
 public class ExpenseResponse {
 
     private int id;
     private float amount;
     private String category;
     private String description;
-    private String date;
+    private LocalDate date;
 
 
-   public ExpenseResponse(int id,float amount,String category,String description, String date){
+   public ExpenseResponse(int id,float amount,String category,String description, LocalDate date){
         this.id=id;
         this.amount=amount;
         this.category=category;
@@ -50,11 +52,11 @@ public class ExpenseResponse {
         this.description = description;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

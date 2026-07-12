@@ -1,26 +1,18 @@
 package com.achintya.expensemanager.service;
 import com.achintya.expensemanager.model.Expense;
-import com.achintya.expensemanager.storage.StorageService;
+import com.achintya.expensemanager.repository.ExpenseRepository;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
 
-import java.util.ArrayList;
 import org.slf4j.LoggerFactory;
 @Service
 public class ExpenseService {
     private static final Logger logger = LoggerFactory.getLogger(ExpenseService.class);
-    private ArrayList<Expense> expenses=new ArrayList<>();
-    private StorageService storageService;
-    public ExpenseService(StorageService storageService){
-        /*Expense e1= new Expense(1,420.0f,"food","food expense","06-07-2026");
-        Expense e2= new Expense(2,991.2f,"travel","travel expense","06-07-2026");
-        Expense e3= new Expense(3,666.35f,"shopping","shopping expense","06-07-2026");
-        expenses.add(e1);
-        expenses.add(e2);
-        expenses.add(e3);*/
-        this.storageService=storageService;
-        expenses=storageService.load();
-        logger.info("expenses retrived successfully from file");
+    private ExpenseRepository expenseRepository;
+    public ExpenseService(ExpenseRepository expenseRepository){
+        this.expenseRepository=expenseRepository;
     }
     public void printMenu(){
         System.out.println("===== Expense Manager =====");
@@ -33,85 +25,58 @@ public class ExpenseService {
         System.out.println("7. Exit");
         System.out.println("Enter choice");
     }
-    public ArrayList<Expense> getAllExpenses(){
-        return expenses;
+    public List<Expense> getAllExpenses(){
+        return expenseRepository.findAll();
     }
-    /*ExpenseService(StorageService storageService){
-        //FileService fs = new FileService();
-        expenses = storageService.loadData();
-    }*/
    public Expense addExpense(Expense expense){
-       expenses.add(expense);
-       //return new ExpenseResponse(expense.getId(),expense.getAmount(),expense.getCategory(),expense.getDescription(),expense.getDate());
-       boolean expenseSaved=storageService.save(expense);
-       if(expenseSaved) {
-           logger.info("expense saved to the file successfully");
+       try{
+       Expense savedExpenseInDb=expenseRepository.save(expense);
+       logger.info("Expense Successfully saved [id={},amount={} and category={}]",savedExpenseInDb.getId(),savedExpenseInDb.getAmount(),savedExpenseInDb.getCategory());
+       return savedExpenseInDb;
        }
-       else{
-           logger.warn("failed to save expense to file");
+       catch (Exception e) {
+           logger.error("exception occured while adding data to db");
+           return null;
        }
-       return  expense;
-    }
-    public  void viewExpense(){
+   }
+    public  List<Expense> viewExpense(){
         System.out.println("fetching the current expense list");
-        for(Expense e:expenses){
-            System.out.println(e);
-        }
+        return expenseRepository.findAll();
     }
     public boolean deleteExpenseById(int id){
-        boolean deleted=false;
-        for(Expense e:expenses){
-            if(e.getId()==id){
-                expenses.remove(e);
-                deleted=true;
-                break;
-            }
+        try {
+            expenseRepository.deleteById(id);
+            logger.info("expense deleted with id={} successfully",id);
+            return true;
         }
-        return  deleted;
+        catch (Exception e){
+            logger.error("could not delete expense with id={} successfully",id);
+            return false;
+        }
+
     }
     public boolean updateExpenseById(int id,float amount){
-        boolean updated=false;
-        for(Expense e:expenses){
-            if(e.getId()==id){
-                boolean setNewValue=e.setAmount(amount);
-                if(setNewValue)
-                {
-                    updated=true;
-                    return updated;
-                }
-                else{
-                    System.out.println("invalid amount! couldn't update the amount");
-                    return updated;
-                }
-            }
+        try{
+        Optional<Expense> currentExpense=expenseRepository.findById(id);
+        Expense savedExpense=currentExpense.get();
+        savedExpense.setAmount(amount);
+        expenseRepository.save(savedExpense);
+            logger.info("expense with id={} updated successfully with amount={}",id,amount);
+            return  true;
         }
-        return  updated;
+        catch (Exception e){
+            logger.error("could not update amount for expense with id={} successfully",id);
+            return false;
+        }
     }
 
-    public ArrayList<Expense> searchExpenseByCategory(String category) {
-        ArrayList<Expense> matchingExpense=new ArrayList<>();
-        for(Expense e: expenses){
-            if(e.getCategory().equalsIgnoreCase(category)){
-                matchingExpense.add(e);
-            }
-        }
-        return matchingExpense;
+   public List<Expense> findExpenseByCategory(String category) {
+        return expenseRepository.findByCategoryIgnoreCase(category);
     }
-    public float getTotalExpense(String category){
-        float totalExpense=0;
-        if(category!=null) {
-            for (Expense e : expenses) {
-                if (category.equalsIgnoreCase(e.getCategory())) {
-                    totalExpense += e.getAmount();
-                }
-            }
-        }
-        else{
-            for (Expense e : expenses) {
-                totalExpense += e.getAmount();
-            }
-        }
-
-        return totalExpense;
+    public List<Expense> findExpenseWithAmountGreaterThan(float amount) {
+        return expenseRepository.findByAmountGreaterThan(amount);
+    }
+    public List<Expense> findExpenseWithAmountGreaterThanAndCategory(float amount, String category) {
+        return expenseRepository.findByAmountGreaterThanAndCategory(amount,category);
     }
 }

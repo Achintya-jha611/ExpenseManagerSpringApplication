@@ -5,19 +5,18 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import java.time.LocalDate;
+
 @Entity
 public class Expense {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private int id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Integer id;
     private float amount;
     private String category;
     private String description;
-    private String date;
-    private static int nextId=1;
-
-    Expense(){};
-
-    public Expense(float amount, String category, String description, String date){
-        this.id=nextId++;
+    private LocalDate date;
+    protected Expense(){};
+    public Expense(float amount, String category, String description, LocalDate date){
+        //this.id=nextId++;
         if(amount<=0){
             throw new IllegalArgumentException("amount cannot be negative");
         }
@@ -26,18 +25,7 @@ public class Expense {
         this.description=description;
         this.date=date;
     }
-    public Expense(int Id,float amount,String category,String description,String date)
-    {
-        this.id=Id;
-        if(amount<=0){
-            throw new IllegalArgumentException("amount cannot be negative");
-        }
-        this.amount=amount;
-        this.category=category;
-        this.description=description;
-        this.date=date;
-    }
-    public int getId(){
+    public Integer getId(){
         return this.id;
     }
     public float getAmount(){
@@ -49,13 +37,9 @@ public class Expense {
     public String getDescription(){
         return this.description;
     }
-    public String getDate(){
+    public LocalDate getDate(){
         return this.date;
     }
-
-    /*public void setId(int id){
-        this.id=id;
-    }*/
     public boolean setAmount(float amount){
         if(amount<=0){
             return false;
@@ -71,7 +55,7 @@ public class Expense {
     public void setDescription(String description){
         this.description=description;
     }
-    public void setDate(String date){
+    public void setDate(LocalDate date){
         this.date=date;
     }
     @Override public String toString(){
@@ -83,15 +67,4 @@ public class Expense {
                 ",date='"+date +'\''+
                 '}';
     }
-    public String toCSV() {
-        return id + "," +
-                amount + "," +
-                category + "," +
-                description + "," +
-                date;
-    }
-    public static void setUpdatedNextId(int updatedNextId){
-        nextId=updatedNextId;
-    }
-
 }
