@@ -13,6 +13,4 @@ public interface ExpenseRepository extends JpaRepository<Expense,Integer> {
         List<Expense> findByAmountGreaterThanAndCategory(float amount,String category);
         List<Expense> findByAmountBetween(float startAmount,String endAmount);
         List<Expense> findByDateBetween(float startAmount,String endAmount);
-
-
 }

@@ -2,16 +2,16 @@ package com.achintya.expensemanager.controller;
 
 import com.achintya.expensemanager.dto.CreateExpenseRequest;
 import com.achintya.expensemanager.dto.ExpenseResponse;
+import com.achintya.expensemanager.dto.UpdateExpenseRequest;
 import com.achintya.expensemanager.mapper.ExpenseMapper;
 import com.achintya.expensemanager.model.Expense;
 import com.achintya.expensemanager.service.ExpenseService;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -34,5 +34,22 @@ public class ExpenseController {
         Expense createdExpense=expenseService.addExpense(expense);
         logger.info("Expense Successfully Created [id={},amount={} and category={}]",createdExpense.getId(),createdExpense.getAmount(),createdExpense.getCategory());
         return ResponseEntity.status(HttpStatus.CREATED).body(ExpenseMapper.toExpenseResponse(createdExpense));
+    }
+    @PutMapping ("/expenses/{id}")
+    public ResponseEntity<ExpenseResponse> updateExpense(@PathVariable Integer id,@Valid @RequestBody UpdateExpenseRequest request){
+        Expense updatedExpense = expenseService.updateExpenseById(id,request.getAmount());
+        return ResponseEntity.ok(
+                ExpenseMapper.toExpenseResponse(updatedExpense));
+       /* if (updatedExpense!=null) {
+            return ResponseEntity.status(HttpStatus.OK).body(ExpenseMapper.toExpenseResponse(updatedExpense));
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExpenseMapper.toExpenseResponse(updatedExpense));
+        }*/
+    }
+    @DeleteMapping ("/expenses/{id}")
+    public boolean deleteExpense(@PathVariable Integer id){
+      return  expenseService.deleteExpenseById(id);
+
     }
 }

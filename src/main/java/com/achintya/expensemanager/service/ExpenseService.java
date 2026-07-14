@@ -1,4 +1,5 @@
 package com.achintya.expensemanager.service;
+import com.achintya.expensemanager.ExceptionHandler.ExpenseNotFoundException;
 import com.achintya.expensemanager.model.Expense;
 import com.achintya.expensemanager.repository.ExpenseRepository;
 import org.slf4j.Logger;
@@ -44,6 +45,7 @@ public class ExpenseService {
         return expenseRepository.findAll();
     }
     public boolean deleteExpenseById(int id){
+        if(expenseRepository.existsById(id)){
         try {
             expenseRepository.deleteById(id);
             logger.info("expense deleted with id={} successfully",id);
@@ -52,22 +54,30 @@ public class ExpenseService {
         catch (Exception e){
             logger.error("could not delete expense with id={} successfully",id);
             return false;
+        }}
+        else{
+            logger.error("id does not exist in the system");
+            return false;
         }
 
     }
-    public boolean updateExpenseById(int id,float amount){
-        try{
-        Optional<Expense> currentExpense=expenseRepository.findById(id);
-        Expense savedExpense=currentExpense.get();
-        savedExpense.setAmount(amount);
-        expenseRepository.save(savedExpense);
-            logger.info("expense with id={} updated successfully with amount={}",id,amount);
-            return  true;
-        }
-        catch (Exception e){
-            logger.error("could not update amount for expense with id={} successfully",id);
-            return false;
-        }
+    public  Expense getExpenseById(Integer id){
+        Optional<Expense> expense = expenseRepository.findById(id);
+        Expense actualExpense = expense.get();
+        return actualExpense;
+    }
+    public Expense updateExpenseById(int id, float amount) {
+
+        Expense expense = expenseRepository.findById(id)
+                .orElseThrow(() -> new ExpenseNotFoundException(id));
+
+        expense.setAmount(amount);
+
+        Expense updatedExpense = expenseRepository.save(expense);
+
+        logger.info("Expense updated successfully with id={}", id);
+
+        return updatedExpense;
     }
 
    public List<Expense> findExpenseByCategory(String category) {
