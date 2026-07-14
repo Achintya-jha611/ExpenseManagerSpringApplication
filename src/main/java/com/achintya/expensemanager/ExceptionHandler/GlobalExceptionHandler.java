@@ -3,6 +3,7 @@ package com.achintya.expensemanager.ExceptionHandler;
 import com.achintya.expensemanager.dto.ErrorResponse;
 import com.achintya.expensemanager.dto.ValidationError;
 import org.slf4j.Logger;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -28,7 +29,15 @@ import org.slf4j.LoggerFactory;
             ValidationError validationError= new ValidationError(error.getField(),error.getDefaultMessage());
             validationErrors.add(validationError);
         }
-        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(),"Validation Failed",validationErrors);
+        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(),"Validation Failed",validationErrors,HttpStatus.BAD_REQUEST);
         return ResponseEntity.badRequest().body(errorResponse);
+    }
+    @ExceptionHandler(ExpenseNotFoundException.class) public ResponseEntity<ErrorResponse> handleExpenseNotFoundException(ExpenseNotFoundException exception){
+
+        ErrorResponse error =
+                new ErrorResponse(LocalDateTime.now(),exception.getMessage(),HttpStatus.NOT_FOUND);
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(error);
     }
 }
