@@ -1,5 +1,6 @@
 package com.achintya.expensemanager.controller;
 
+import com.achintya.expensemanager.dto.CategoryExpenseSummary;
 import com.achintya.expensemanager.dto.CreateExpenseRequest;
 import com.achintya.expensemanager.dto.ExpenseResponse;
 import com.achintya.expensemanager.dto.UpdateExpenseRequest;
@@ -27,6 +28,10 @@ public class ExpenseController {
     @GetMapping("/expenses")
     public List<Expense> getAllExpenses(){
         return expenseService.getAllExpenses();
+    }
+    @GetMapping("/expenses/category-summary")
+    public List<CategoryExpenseSummary> getAllTotalByCategory(){
+        return expenseService.findCategoryExpenseSummary();
     }
     @PostMapping("/expenses")
     public ResponseEntity<ExpenseResponse> addExpense(@Valid @RequestBody CreateExpenseRequest request){
