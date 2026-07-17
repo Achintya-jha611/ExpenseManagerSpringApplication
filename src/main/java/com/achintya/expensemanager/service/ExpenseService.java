@@ -1,5 +1,6 @@
 package com.achintya.expensemanager.service;
 import com.achintya.expensemanager.ExceptionHandler.ExpenseNotFoundException;
+import com.achintya.expensemanager.dto.CategoryExpenseSummary;
 import com.achintya.expensemanager.model.Expense;
 import com.achintya.expensemanager.repository.ExpenseRepository;
 import org.slf4j.Logger;
@@ -88,5 +89,8 @@ public class ExpenseService {
     }
     public List<Expense> findExpenseWithAmountGreaterThanAndCategory(float amount, String category) {
         return expenseRepository.findByAmountGreaterThanAndCategory(amount,category);
+    }
+    public List<CategoryExpenseSummary> findCategoryExpenseSummary() {
+        return expenseRepository.findCategoryExpenseSummary();
     }
 }
