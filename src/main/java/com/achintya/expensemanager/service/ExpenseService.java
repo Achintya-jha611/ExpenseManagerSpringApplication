@@ -93,4 +93,8 @@ public class ExpenseService {
     public List<CategoryExpenseSummary> findCategoryExpenseSummary() {
         return expenseRepository.findCategoryExpenseSummary();
     }
+    public List<Expense> findExpenseByCategoryNative(String category) {
+        return expenseRepository.findByCategoryNative(category);
+    }
+
 }
