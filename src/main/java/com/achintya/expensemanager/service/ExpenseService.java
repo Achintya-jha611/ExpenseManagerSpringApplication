@@ -4,6 +4,10 @@ import com.achintya.expensemanager.dto.CategoryExpenseSummary;
 import com.achintya.expensemanager.model.Expense;
 import com.achintya.expensemanager.repository.ExpenseRepository;
 import org.slf4j.Logger;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -27,8 +31,15 @@ public class ExpenseService {
         System.out.println("7. Exit");
         System.out.println("Enter choice");
     }
-    public List<Expense> getAllExpenses(){
-        return expenseRepository.findAll();
+    public Page<Expense> getAllExpenses(Integer page, Integer size,String sortField,String sortOrder){
+        if(sortOrder.equalsIgnoreCase("asc")) {
+            PageRequest pageRequest = PageRequest.of(page, size, Sort.by(sortField).ascending());
+            return expenseRepository.findAll(pageRequest);
+        }
+        else{
+            PageRequest pageRequest = PageRequest.of(page, size, Sort.by(sortField).descending());
+            return expenseRepository.findAll(pageRequest);
+        }
     }
    public Expense addExpense(Expense expense){
        try{

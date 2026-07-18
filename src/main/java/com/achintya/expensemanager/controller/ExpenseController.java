@@ -9,6 +9,7 @@ import com.achintya.expensemanager.model.Expense;
 import com.achintya.expensemanager.service.ExpenseService;
 import jakarta.validation.Valid;
 import org.apache.coyote.Response;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +27,8 @@ public class ExpenseController {
         this.expenseService = expenseService;
     }
     @GetMapping("/expenses")
-    public List<Expense> getAllExpenses(){
-        return expenseService.getAllExpenses();
+    public Page<Expense> getAllExpenses(@RequestParam(defaultValue = "0")Integer page, @RequestParam(defaultValue = "10")Integer size, @RequestParam(defaultValue = "amount")String sortField,@RequestParam(defaultValue ="asc")String sortOrder){
+        return expenseService.getAllExpenses(page,size,sortField,sortOrder);
     }
     @GetMapping("/expenses/category-summary")
     public List<CategoryExpenseSummary> getAllTotalByCategory(){
