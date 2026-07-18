@@ -33,6 +33,10 @@ public class ExpenseController {
     public List<CategoryExpenseSummary> getAllTotalByCategory(){
         return expenseService.findCategoryExpenseSummary();
     }
+    @GetMapping("/expenses/category")
+    public List<Expense> getAllExpenseByCategory(@RequestParam String category){
+        return expenseService.findExpenseByCategoryNative(category);
+    }
     @PostMapping("/expenses")
     public ResponseEntity<ExpenseResponse> addExpense(@Valid @RequestBody CreateExpenseRequest request){
         Expense expense = ExpenseMapper.toExpense(request);
