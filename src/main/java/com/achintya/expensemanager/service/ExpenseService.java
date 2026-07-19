@@ -3,6 +3,7 @@ import com.achintya.expensemanager.ExceptionHandler.ExpenseNotFoundException;
 import com.achintya.expensemanager.dto.CategoryExpenseSummary;
 import com.achintya.expensemanager.model.Expense;
 import com.achintya.expensemanager.repository.ExpenseRepository;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -106,6 +107,12 @@ public class ExpenseService {
     }
     public List<Expense> findExpenseByCategoryNative(String category) {
         return expenseRepository.findByCategoryNative(category);
+    }
+    @Transactional
+    public Expense updateAmountWithoutSave(Integer id, float amount){
+        Expense expense = expenseRepository.findById(id).orElseThrow(() -> new ExpenseNotFoundException(id));
+        expense.setAmount(amount);
+        return expense;
     }
 
 }
