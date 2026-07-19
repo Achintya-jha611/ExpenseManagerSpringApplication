@@ -57,6 +57,12 @@ public class ExpenseController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExpenseMapper.toExpenseResponse(updatedExpense));
         }*/
     }
+    @PutMapping("/expenses/{id}/amount")
+    public ResponseEntity<ExpenseResponse> updateAmountForExpense(@PathVariable Integer id, @RequestParam float amount){
+        Expense updatedExpense = expenseService.updateAmountWithoutSave(id,amount);
+        return ResponseEntity.status(HttpStatus.OK).body(ExpenseMapper.toExpenseResponse(updatedExpense));
+
+    }
     @DeleteMapping ("/expenses/{id}")
     public boolean deleteExpense(@PathVariable Integer id){
       return  expenseService.deleteExpenseById(id);
