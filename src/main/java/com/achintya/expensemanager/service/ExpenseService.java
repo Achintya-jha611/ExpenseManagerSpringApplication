@@ -1,5 +1,6 @@
 package com.achintya.expensemanager.service;
 import com.achintya.expensemanager.ExceptionHandler.ExpenseNotFoundException;
+import com.achintya.expensemanager.dto.BulkUpdateExpense;
 import com.achintya.expensemanager.dto.CategoryExpenseSummary;
 import com.achintya.expensemanager.model.Expense;
 import com.achintya.expensemanager.repository.ExpenseRepository;
@@ -7,9 +8,10 @@ import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,7 +76,7 @@ public class ExpenseService {
         }
 
     }
-    public  Expense getExpenseById(Integer id){
+    public Expense getExpenseById(Integer id){
         Optional<Expense> expense = expenseRepository.findById(id);
         Expense actualExpense = expense.get();
         return actualExpense;
@@ -92,7 +94,6 @@ public class ExpenseService {
 
         return updatedExpense;
     }
-
    public List<Expense> findExpenseByCategory(String category) {
         return expenseRepository.findByCategoryIgnoreCase(category);
     }
@@ -113,6 +114,33 @@ public class ExpenseService {
         Expense expense = expenseRepository.findById(id).orElseThrow(() -> new ExpenseNotFoundException(id));
         expense.setAmount(amount);
         return expense;
+    }
+    @Transactional
+    public Expense testTransactionRollBack(Integer Id, float amount, String description){
+       Expense expense = expenseRepository.findById(Id).orElseThrow(()->new ExpenseNotFoundException(Id));
+       expense.setAmount(amount);
+       expense.setDescription(description);
+       expenseRepository.flush();
+       throw new RuntimeException("unable to update data..rolling back the changes");
+
+    }
+    @Transactional
+    public List<Expense> bulkUpdateExpenseData(List<BulkUpdateExpense> request){
+       //List<Integer> expenseIds = new ArrayList<>();
+       List<Expense> updatedExpenses= new ArrayList<>();
+       for(int i=0;i< request.size();i++){
+           int expenseId=request.get(i).getId();
+           float amount = request.get(i).getAmount();
+           Expense currentExpense = expenseRepository.findById(expenseId).orElseThrow(()->new ExpenseNotFoundException(expenseId));
+           currentExpense.setAmount(amount);
+           updatedExpenses.add(currentExpense);
+       }
+       /*for(int i=0;i<expenseIds.size();i++){
+           Optional<Expense> expense = expenseRepository.findById(expenseIds.get(i));
+           Expense updatedExpense = expense.get();
+           updatedExpenses.add(updatedExpense);
+       }*/
+       return updatedExpenses;
     }
 
 }

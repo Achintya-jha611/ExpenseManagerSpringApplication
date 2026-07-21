@@ -1,14 +1,10 @@
 package com.achintya.expensemanager.controller;
 
-import com.achintya.expensemanager.dto.CategoryExpenseSummary;
-import com.achintya.expensemanager.dto.CreateExpenseRequest;
-import com.achintya.expensemanager.dto.ExpenseResponse;
-import com.achintya.expensemanager.dto.UpdateExpenseRequest;
+import com.achintya.expensemanager.dto.*;
 import com.achintya.expensemanager.mapper.ExpenseMapper;
 import com.achintya.expensemanager.model.Expense;
 import com.achintya.expensemanager.service.ExpenseService;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,6 +58,20 @@ public class ExpenseController {
         Expense updatedExpense = expenseService.updateAmountWithoutSave(id,amount);
         return ResponseEntity.status(HttpStatus.OK).body(ExpenseMapper.toExpenseResponse(updatedExpense));
 
+    }
+    @PutMapping("/expenses/bulk-update")
+    public ResponseEntity<List<ExpenseResponse>> bulkUpdateExpense(@Valid @RequestBody List<BulkUpdateExpense> request){
+        //Expense updatedExpense = expenseService.updateAmountWithoutSave(id,amount);
+        List<Expense> updatedExpense = expenseService.bulkUpdateExpenseData(request);
+        return ResponseEntity.status(HttpStatus.OK).body(ExpenseMapper.toBulkExpenseResponse(updatedExpense));
+
+    }
+    @PutMapping("/expense/{id}/rollback-test")
+    public ResponseEntity<ExpenseResponse> updateAmountAndDescription(@PathVariable Integer id, @Valid @RequestBody UpdateExpenseRequest request)
+    {
+        Expense updatedExpense = expenseService.testTransactionRollBack(id, request.getAmount(), request.getDescription());
+        return ResponseEntity.status(HttpStatus.OK).body(ExpenseMapper.toExpenseResponse(updatedExpense));
+        //Expense updatedExpense=
     }
     @DeleteMapping ("/expenses/{id}")
     public boolean deleteExpense(@PathVariable Integer id){

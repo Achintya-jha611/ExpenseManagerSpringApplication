@@ -8,10 +8,14 @@ public class UpdateExpenseRequest {
 
     @Positive(message = "amount should be positive")
     float amount;
+    String description;
     public void setAmount(float amount){
         this.amount=amount;
     }
     public float getAmount(){
         return this.amount;
     }
+    public void setDescription(String description){this.description=description;}
+    public String getDescription(){return this.description;}
+
 }
