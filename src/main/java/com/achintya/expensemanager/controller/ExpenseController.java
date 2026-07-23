@@ -55,8 +55,10 @@ public class ExpenseController {
     }
     @PutMapping("/expenses/{id}/amount")
     public ResponseEntity<ExpenseResponse> updateAmountForExpense(@PathVariable Integer id, @RequestParam float amount){
-        Expense updatedExpense = expenseService.updateAmountWithoutSave(id,amount);
-        return ResponseEntity.status(HttpStatus.OK).body(ExpenseMapper.toExpenseResponse(updatedExpense));
+        //Expense updatedExpense = expenseService.updateAmountWithoutSave(id,amount);
+        expenseService.checkingTransactionPropagation(id,amount);
+        //return ResponseEntity.status(HttpStatus.OK).body(ExpenseMapper.toExpenseResponse(updatedExpense));
+        return ResponseEntity.ok().build();
 
     }
     @PutMapping("/expenses/bulk-update")

@@ -3,6 +3,7 @@ import com.achintya.expensemanager.ExceptionHandler.ExpenseNotFoundException;
 import com.achintya.expensemanager.dto.BulkUpdateExpense;
 import com.achintya.expensemanager.dto.CategoryExpenseSummary;
 import com.achintya.expensemanager.model.Expense;
+import com.achintya.expensemanager.repository.AuditLogRepository;
 import com.achintya.expensemanager.repository.ExpenseRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -20,8 +21,10 @@ import org.slf4j.LoggerFactory;
 public class ExpenseService {
     private static final Logger logger = LoggerFactory.getLogger(ExpenseService.class);
     private ExpenseRepository expenseRepository;
-    public ExpenseService(ExpenseRepository expenseRepository){
+    private AuditService auditService;
+    public ExpenseService(ExpenseRepository expenseRepository, AuditService auditService){
         this.expenseRepository=expenseRepository;
+        this.auditService=auditService;
     }
     public void printMenu(){
         System.out.println("===== Expense Manager =====");
@@ -141,6 +144,12 @@ public class ExpenseService {
            updatedExpenses.add(updatedExpense);
        }*/
        return updatedExpenses;
+    }
+    @Transactional
+    public void checkingTransactionPropagation(Integer id,float amount) {
+        Expense expense = updateAmountWithoutSave(id, amount);
+        auditService.saveAuditLog("saved the update to db");
+        throw new RuntimeException("testing rollback");
     }
 
 }
