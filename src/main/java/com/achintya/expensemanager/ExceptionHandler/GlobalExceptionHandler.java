@@ -40,4 +40,20 @@ import org.slf4j.LoggerFactory;
                 .status(HttpStatus.NOT_FOUND)
                 .body(error);
     }
+    @ExceptionHandler(UserNotFoundException.class) public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException exception){
+
+        ErrorResponse error =
+                new ErrorResponse(LocalDateTime.now(),exception.getMessage(),HttpStatus.NOT_FOUND);
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(error);
+    }
+    @ExceptionHandler(DuplicateEmailException.class) public ResponseEntity<ErrorResponse> handleDuplicateEmailFoundException(DuplicateEmailException exception){
+
+        ErrorResponse error =
+                new ErrorResponse(LocalDateTime.now(),exception.getMessage(),HttpStatus.CONFLICT);
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(error);
+    }
 }
