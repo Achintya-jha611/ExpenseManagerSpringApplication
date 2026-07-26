@@ -1,6 +1,7 @@
 package com.achintya.expensemanager.controller;
 
 import com.achintya.expensemanager.dto.CreateUserRequest;
+import com.achintya.expensemanager.dto.UpdateUserRequest;
 import com.achintya.expensemanager.dto.UserResponse;
 import com.achintya.expensemanager.mapper.UserMapper;
 import com.achintya.expensemanager.model.User;
@@ -10,6 +11,8 @@ import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -26,5 +29,18 @@ public class UserController {
     @GetMapping("/user/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable @Positive Integer id){
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUserById(id));
+    }
+    @GetMapping("/users")
+    public ResponseEntity<List<UserResponse>> getUsers(){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUsers());
+    }
+    @PutMapping("/users/{id}")
+    public ResponseEntity<UserResponse> updateUser(@RequestBody UpdateUserRequest request , @PathVariable Integer id){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(request,id));
+    }
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Integer id){
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
     }
 }
