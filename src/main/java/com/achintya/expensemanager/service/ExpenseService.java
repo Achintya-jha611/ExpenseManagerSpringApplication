@@ -1,10 +1,16 @@
 package com.achintya.expensemanager.service;
 import com.achintya.expensemanager.ExceptionHandler.ExpenseNotFoundException;
+import com.achintya.expensemanager.ExceptionHandler.UserNotFoundException;
 import com.achintya.expensemanager.dto.BulkUpdateExpense;
 import com.achintya.expensemanager.dto.CategoryExpenseSummary;
+import com.achintya.expensemanager.dto.CreateExpenseRequest;
+import com.achintya.expensemanager.dto.UserResponse;
+import com.achintya.expensemanager.mapper.ExpenseMapper;
 import com.achintya.expensemanager.model.Expense;
+import com.achintya.expensemanager.model.User;
 import com.achintya.expensemanager.repository.AuditLogRepository;
 import com.achintya.expensemanager.repository.ExpenseRepository;
+import com.achintya.expensemanager.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
@@ -21,10 +27,12 @@ import org.slf4j.LoggerFactory;
 public class ExpenseService {
     private static final Logger logger = LoggerFactory.getLogger(ExpenseService.class);
     private ExpenseRepository expenseRepository;
+    private UserRepository userRepository;
     private AuditService auditService;
-    public ExpenseService(ExpenseRepository expenseRepository, AuditService auditService){
+    public ExpenseService(ExpenseRepository expenseRepository, AuditService auditService,UserRepository userRepository){
         this.expenseRepository=expenseRepository;
         this.auditService=auditService;
+        this.userRepository = userRepository;
     }
     public void printMenu(){
         System.out.println("===== Expense Manager =====");
@@ -47,15 +55,18 @@ public class ExpenseService {
             return expenseRepository.findAll(pageRequest);
         }
     }
-   public Expense addExpense(Expense expense){
+   public Expense addExpense(CreateExpenseRequest request){
        try{
+           Expense expense = ExpenseMapper.toExpense(request);
+           User user = userRepository.findById(request.getUserId()).orElseThrow(()->new UserNotFoundException(request.getUserId()));
+           expense.setUser(user);
        Expense savedExpenseInDb=expenseRepository.save(expense);
        logger.info("Expense Successfully saved [id={},amount={} and category={}]",savedExpenseInDb.getId(),savedExpenseInDb.getAmount(),savedExpenseInDb.getCategory());
        return savedExpenseInDb;
        }
        catch (Exception e) {
-           logger.error("exception occured while adding data to db");
-           return null;
+           e.printStackTrace();
+           throw e;
        }
    }
     public  List<Expense> viewExpense(){

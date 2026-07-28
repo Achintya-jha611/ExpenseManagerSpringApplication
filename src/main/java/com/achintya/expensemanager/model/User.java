@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -16,6 +18,8 @@ public class User {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDate dateOfBirth;
+    @OneToMany(mappedBy = "user")
+    List<Expense> expenses = new ArrayList<>();
 
     public User(){};
     public User(String name, String email, String phoneNumber, String password, LocalDate dateOfBirth){

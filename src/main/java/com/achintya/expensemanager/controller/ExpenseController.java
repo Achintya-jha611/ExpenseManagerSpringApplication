@@ -36,9 +36,9 @@ public class ExpenseController {
     }
     @PostMapping("/expenses")
     public ResponseEntity<ExpenseResponse> addExpense(@Valid @RequestBody CreateExpenseRequest request){
-        Expense expense = ExpenseMapper.toExpense(request);
-        Expense createdExpense=expenseService.addExpense(expense);
-        logger.info("Expense Successfully Created [id={},amount={} and category={}]",createdExpense.getId(),createdExpense.getAmount(),createdExpense.getCategory());
+        //Expense expense = ExpenseMapper.toExpense(request);
+        Expense createdExpense=expenseService.addExpense(request);
+        //logger.info("Expense Successfully Created [id={},amount={} and category={}]",createdExpense.getId(),createdExpense.getAmount(),createdExpense.getCategory(),createdExpense.getUser());
         return ResponseEntity.status(HttpStatus.CREATED).body(ExpenseMapper.toExpenseResponse(createdExpense));
     }
     @PutMapping ("/expenses/{id}")
