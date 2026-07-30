@@ -6,6 +6,7 @@ import com.achintya.expensemanager.dto.CategoryExpenseSummary;
 import com.achintya.expensemanager.dto.CreateExpenseRequest;
 import com.achintya.expensemanager.dto.UserResponse;
 import com.achintya.expensemanager.mapper.ExpenseMapper;
+import com.achintya.expensemanager.mapper.UserMapper;
 import com.achintya.expensemanager.model.Expense;
 import com.achintya.expensemanager.model.User;
 import com.achintya.expensemanager.repository.AuditLogRepository;
@@ -161,6 +162,12 @@ public class ExpenseService {
         Expense expense = updateAmountWithoutSave(id, amount);
         auditService.saveAuditLog("saved the update to db");
         throw new RuntimeException("testing rollback");
+    }
+    @Transactional
+    public UserResponse getExpenseUser(Integer id){
+        Expense expense = expenseRepository.findById(id).orElseThrow(()->new ExpenseNotFoundException(id));
+        User user = expense.getUser();
+        return UserMapper.toUserResponse(user);
     }
 
 }

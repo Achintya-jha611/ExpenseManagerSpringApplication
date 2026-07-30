@@ -18,6 +18,7 @@ public class User {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDate dateOfBirth;
+
     @OneToMany(mappedBy = "user")
     List<Expense> expenses = new ArrayList<>();
 
@@ -89,5 +90,13 @@ public class User {
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public List<Expense> getExpenses() {
+        return expenses;
+    }
+
+    public void setExpenses(List<Expense> expenses) {
+        this.expenses = expenses;
     }
 }

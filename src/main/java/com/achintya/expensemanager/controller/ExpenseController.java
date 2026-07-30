@@ -5,6 +5,7 @@ import com.achintya.expensemanager.mapper.ExpenseMapper;
 import com.achintya.expensemanager.model.Expense;
 import com.achintya.expensemanager.service.ExpenseService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,5 +80,8 @@ public class ExpenseController {
     public boolean deleteExpense(@PathVariable Integer id){
       return  expenseService.deleteExpenseById(id);
 
+    }
+    @GetMapping("expenses/{id}/user") ResponseEntity<UserResponse> getExpenseOwner(@PathVariable @Positive Integer id){
+        return ResponseEntity.status(HttpStatus.OK).body(expenseService.getExpenseUser(id));
     }
 }

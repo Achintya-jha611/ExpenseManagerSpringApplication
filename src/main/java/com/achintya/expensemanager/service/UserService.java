@@ -3,9 +3,12 @@ package com.achintya.expensemanager.service;
 import com.achintya.expensemanager.ExceptionHandler.DuplicateEmailException;
 import com.achintya.expensemanager.ExceptionHandler.UserNotFoundException;
 import com.achintya.expensemanager.dto.CreateUserRequest;
+import com.achintya.expensemanager.dto.ExpenseResponse;
 import com.achintya.expensemanager.dto.UpdateUserRequest;
 import com.achintya.expensemanager.dto.UserResponse;
+import com.achintya.expensemanager.mapper.ExpenseMapper;
 import com.achintya.expensemanager.mapper.UserMapper;
+import com.achintya.expensemanager.model.Expense;
 import com.achintya.expensemanager.model.User;
 import com.achintya.expensemanager.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -86,6 +89,12 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException(id));
 
         userRepository.delete(user);
+    }
+    @Transactional
+    public List<ExpenseResponse> getUserExpense(Integer id){
+        User user = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException(id));
+        List<Expense> userExpenses=user.getExpenses();
+        return ExpenseMapper.toBulkExpenseResponse(userExpenses);
     }
 
 }
