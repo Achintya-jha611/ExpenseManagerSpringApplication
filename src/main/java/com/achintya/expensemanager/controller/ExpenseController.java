@@ -5,6 +5,7 @@ import com.achintya.expensemanager.mapper.ExpenseMapper;
 import com.achintya.expensemanager.model.Expense;
 import com.achintya.expensemanager.service.ExpenseService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,9 +37,9 @@ public class ExpenseController {
     }
     @PostMapping("/expenses")
     public ResponseEntity<ExpenseResponse> addExpense(@Valid @RequestBody CreateExpenseRequest request){
-        Expense expense = ExpenseMapper.toExpense(request);
-        Expense createdExpense=expenseService.addExpense(expense);
-        logger.info("Expense Successfully Created [id={},amount={} and category={}]",createdExpense.getId(),createdExpense.getAmount(),createdExpense.getCategory());
+        //Expense expense = ExpenseMapper.toExpense(request);
+        Expense createdExpense=expenseService.addExpense(request);
+        //logger.info("Expense Successfully Created [id={},amount={} and category={}]",createdExpense.getId(),createdExpense.getAmount(),createdExpense.getCategory(),createdExpense.getUser());
         return ResponseEntity.status(HttpStatus.CREATED).body(ExpenseMapper.toExpenseResponse(createdExpense));
     }
     @PutMapping ("/expenses/{id}")
@@ -79,5 +80,8 @@ public class ExpenseController {
     public boolean deleteExpense(@PathVariable Integer id){
       return  expenseService.deleteExpenseById(id);
 
+    }
+    @GetMapping("expenses/{id}/user") ResponseEntity<UserResponse> getExpenseOwner(@PathVariable @Positive Integer id){
+        return ResponseEntity.status(HttpStatus.OK).body(expenseService.getExpenseUser(id));
     }
 }

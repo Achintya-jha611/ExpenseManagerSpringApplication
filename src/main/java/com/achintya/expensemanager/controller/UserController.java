@@ -1,6 +1,7 @@
 package com.achintya.expensemanager.controller;
 
 import com.achintya.expensemanager.dto.CreateUserRequest;
+import com.achintya.expensemanager.dto.ExpenseResponse;
 import com.achintya.expensemanager.dto.UpdateUserRequest;
 import com.achintya.expensemanager.dto.UserResponse;
 import com.achintya.expensemanager.mapper.UserMapper;
@@ -8,6 +9,7 @@ import com.achintya.expensemanager.model.User;
 import com.achintya.expensemanager.service.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,5 +44,8 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Integer id){
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/users/{id}/expenses") ResponseEntity<List<ExpenseResponse>> getUserExpense(@PathVariable @Positive Integer id){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserExpense(id));
     }
 }

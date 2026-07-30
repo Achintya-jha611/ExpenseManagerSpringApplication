@@ -1,9 +1,7 @@
 package com.achintya.expensemanager.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.achintya.expensemanager.mapper.ExpenseMapper;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
@@ -14,9 +12,13 @@ public class Expense {
     private String category;
     private String description;
     private LocalDate date;
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
     protected Expense(){};
     public Expense(float amount, String category, String description, LocalDate date){
         //this.id=nextId++;
+        //user=
         if(amount<=0){
             throw new IllegalArgumentException("amount cannot be negative");
         }
@@ -55,6 +57,13 @@ public class Expense {
     public void setDescription(String description){
         this.description=description;
     }
+    public void setUser(User user) {
+        this.user = user;
+    }
+    public User getUser(){
+        return this.user;
+    }
+
     public void setDate(LocalDate date){
         this.date=date;
     }

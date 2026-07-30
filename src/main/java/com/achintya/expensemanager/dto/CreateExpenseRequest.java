@@ -1,5 +1,6 @@
 package com.achintya.expensemanager.dto;
 
+import com.achintya.expensemanager.model.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -13,6 +14,8 @@ public class CreateExpenseRequest {
     @NotBlank private String description;
     @NotNull(message = "Date is required")
     @PastOrPresent(message = "Expense date cannot be in the future") private LocalDate date;
+
+    @Positive private Integer userId;
 
     public float getAmount() {
         return amount;
@@ -44,5 +47,13 @@ public class CreateExpenseRequest {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 }
