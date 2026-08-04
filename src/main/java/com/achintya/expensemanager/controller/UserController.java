@@ -45,7 +45,7 @@ public class UserController {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
-    @GetMapping("/users/{id}/expenses") ResponseEntity<List<ExpenseResponse>> getUserExpense(@PathVariable @Positive Integer id){
+    @GetMapping("/users/{id}/expenses") public ResponseEntity<List<ExpenseResponse>> getUserExpense(@PathVariable @Positive Integer id){
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUserExpense(id));
     }
 }
