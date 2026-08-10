@@ -14,6 +14,7 @@ import com.achintya.expensemanager.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,9 +25,11 @@ import java.util.Optional;
 public class UserService {
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository){
+    public UserService(UserRepository userRepository,PasswordEncoder passwordEncoder){
         this.userRepository=userRepository;
+        this.passwordEncoder=passwordEncoder;
     }
 
     public UserResponse createUser(CreateUserRequest request){
@@ -36,6 +39,7 @@ public class UserService {
             throw new DuplicateEmailException(request.getEmail());
             }
             User user= UserMapper.toUser(request);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setCreatedAt(LocalDateTime.now());
             user.setUpdatedAt(LocalDateTime.now());
             User userCreated = userRepository.save(user);
