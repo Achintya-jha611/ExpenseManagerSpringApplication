@@ -4,6 +4,11 @@ import com.achintya.expensemanager.dto.*;
 import com.achintya.expensemanager.mapper.ExpenseMapper;
 import com.achintya.expensemanager.model.Expense;
 import com.achintya.expensemanager.service.ExpenseService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.springframework.data.domain.Page;
@@ -35,6 +40,26 @@ public class ExpenseController {
     public List<Expense> getAllExpenseByCategory(@RequestParam String category){
         return expenseService.findExpenseByCategoryNative(category);
     }
+    @Operation(summary = "creates a new Expense",
+    description = "creates a new expanse for the user")
+    @ApiResponse(
+            responseCode = "201",
+            description = "Expense created successfully"
+    )
+    @ApiResponse(
+            responseCode = "400",
+            description = "invalid request payload/validation failed",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "403",
+            description = "Access denied"
+    )
+    @SecurityRequirement(name = "bearerAuth")
+
     @PostMapping("/expenses")
     public ResponseEntity<ExpenseResponse> addExpense(@Valid @RequestBody CreateExpenseRequest request){
         //Expense expense = ExpenseMapper.toExpense(request);

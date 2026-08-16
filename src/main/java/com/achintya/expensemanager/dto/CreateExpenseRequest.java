@@ -1,6 +1,7 @@
 package com.achintya.expensemanager.dto;
 
 import com.achintya.expensemanager.model.User;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -9,9 +10,13 @@ import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
 
 public class CreateExpenseRequest {
+    @Schema(description = "Expense amount",example="250.50")
     @Positive private float amount;
+    @Schema(description = "Expense category ex:- food,shopping,travel etc",example="Food")
     @NotBlank private String category;
+    @Schema(description = "Expense description",example="Expense for food ordered online")
     @NotBlank private String description;
+    @Schema(description = "Expense date",example="2026-08-15")
     @NotNull(message = "Date is required")
     @PastOrPresent(message = "Expense date cannot be in the future") private LocalDate date;
 
