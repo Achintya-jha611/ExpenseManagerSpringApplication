@@ -92,9 +92,8 @@ public class ExpenseService {
 
     }
     public Expense getExpenseById(Integer id){
-        Optional<Expense> expense = expenseRepository.findById(id);
-        Expense actualExpense = expense.get();
-        return actualExpense;
+        return expenseRepository.findById(id)
+                .orElseThrow(() -> new ExpenseNotFoundException(id));
     }
     public Expense updateExpenseById(int id, float amount) {
 
