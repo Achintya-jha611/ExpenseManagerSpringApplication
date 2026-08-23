@@ -22,6 +22,15 @@ public class CreateExpenseRequest {
 
     @Positive private Integer userId;
 
+    public CreateExpenseRequest(float amount, String category, String description, LocalDate date, Integer userId) {
+
+        this.amount = amount;
+        this.category = category;
+        this.description = description;
+        this.date = date;
+        this.userId = userId;
+    }
+
     public float getAmount() {
         return amount;
     }

@@ -1,8 +1,10 @@
 package com.achintya.expensemanager;
 
 import com.achintya.expensemanager.ExceptionHandler.ExpenseNotFoundException;
+import com.achintya.expensemanager.dto.CreateExpenseRequest;
 import com.achintya.expensemanager.model.AuditLog;
 import com.achintya.expensemanager.model.Expense;
+import com.achintya.expensemanager.model.User;
 import com.achintya.expensemanager.repository.ExpenseRepository;
 import com.achintya.expensemanager.repository.UserRepository;
 import com.achintya.expensemanager.service.AuditService;
@@ -10,6 +12,7 @@ import com.achintya.expensemanager.service.ExpenseService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -35,6 +38,7 @@ public class ExpenseServiceTest {
     private ExpenseService expenseService;
 
     private Expense expense;
+    private User user;
 
     @BeforeEach
     void setUp(){
@@ -70,5 +74,24 @@ public class ExpenseServiceTest {
         boolean result = expenseService.deleteExpenseById(5);
         assertFalse(result);
         verify(expenseRepository,never()).deleteById(5);
+    }
+    @Test
+    void createExpenseTest(){
+         CreateExpenseRequest createExpenseRequest = new CreateExpenseRequest(200,"food","travel",LocalDate.now(),1);
+         when(userRepository.findById(1)).thenReturn(Optional.of(user));
+         when(expenseRepository.save(any(Expense.class))).thenAnswer(invocation -> invocation.getArgument(0));
+         Expense result = expenseService.addExpense(createExpenseRequest);
+        ArgumentCaptor<Expense> expenseArgumentCaptor = ArgumentCaptor.forClass(Expense.class);
+        verify(expenseRepository,times(1)).save(expenseArgumentCaptor.capture());
+        Expense capturedExpense = expenseArgumentCaptor.getValue();
+        assertEquals(createExpenseRequest.getAmount(), capturedExpense.getAmount());
+        assertEquals(createExpenseRequest.getCategory(), capturedExpense.getCategory());
+        assertEquals(
+                createExpenseRequest.getDescription(),
+                capturedExpense.getDescription()
+        );
+        assertEquals(user, capturedExpense.getUser());
+        assertEquals(capturedExpense, result);
+
     }
 }
