@@ -42,6 +42,9 @@ public class Expense {
     public LocalDate getDate(){
         return this.date;
     }
+    public void setId(Integer id) {
+        this.id = id;
+    }
     public boolean setAmount(float amount){
         if(amount<=0){
             return false;
