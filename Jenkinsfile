@@ -2,10 +2,15 @@ pipeline {
     agent any
 
     stages {
-        stage('Environment Check') {
+        stage('Build') {
             steps {
-                sh 'pwd'
-                sh 'ls -la'
+                sh './mvnw clean compile'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh './mvnw test'
             }
         }
     }
