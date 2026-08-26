@@ -43,6 +43,13 @@ public class ExpenseServiceTest {
     @BeforeEach
     void setUp(){
          expense = new Expense(500,"cab","cab expense", LocalDate.now());
+        user = new User(
+                "Achintya",
+                "test@example.com",
+                "1234567890",
+                "password",
+                LocalDate.of(2000, 1, 1)
+        );
     }
     @Test
     void shouldReturnExpenseId() {
